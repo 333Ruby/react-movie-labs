@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import { useParams } from "react-router";
+import { getMovie, getMovieImages } from "../api/tmdb-api";
 
 const MoviePage = (props) => {
   const { id } = useParams();
@@ -12,41 +13,18 @@ const MoviePage = (props) => {
   const [images, setImages] = useState([]);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    setError(false);
-    fetch(
-      `https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
-    )
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Movie request failed: " + res.status);
-        }
-        return res.json();
-      })
-      .then((movie) => {
-        setMovie(movie);
-      })
-      .catch((err) => {
-        console.error(err);
-        setMovie(null);
-        setError(true);
-      });
+    useEffect(() => {
+    getMovie(id).then((movie) => {
+      setMovie(movie);
+    });
   }, [id]);
 
   useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/${id}/images?api_key=${import.meta.env.VITE_TMDB_KEY}`
-    )
-      .then((res) => res.json())
-      .then((json) => json.posters || [])
-      .then((images) => {
-        setImages(images);
-      })
-      .catch((err) => {
-        console.error(err);
-        setImages([]);
-      });
-  }, [id]);
+    getMovieImages(id).then((images) => {
+      setImages(images);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (error) {
     return <h2>Could not load this movie. Check the movie id in the URL.</h2>;
