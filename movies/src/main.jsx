@@ -9,6 +9,7 @@ import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
 import SiteHeader from "./components/siteHeader";
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import MoviesContextProvider from "./contexts/moviesContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,4 +41,8 @@ const App = () => {
 };
 
 const rootElement = createRoot(document.getElementById("root"));
-rootElement.render(<App />);
+rootElement.render(
+  <MoviesContextProvider>
+    <App />
+  </MoviesContextProvider>
+);
